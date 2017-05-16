@@ -43,30 +43,30 @@ namespace utl
   const Color black (0.0, 0.0, 0.0);
   const Color bgColor (0.7, 0.7, 1.0);    // Background color for the PCL visaualizer
   
-  /** \brief Convert a single point with RGB information to grayscale
-   *  \param[in,out]  point point to be converted to grayscale
-   *  \note conversion is done using the formula used in OpenCV (http://docs.opencv.org/modules/imgproc/doc/miscellaneous_transformations.html)
-   */
-  inline
-  std::vector<Color> colorizeData ( const std::vector<float> &data,
-                                    const int colormal_type = 0
-                                  )
-  {
-    // Get LUT
-    vtkSmartPointer<vtkLookupTable> lut;
-    pcl::visualization::getColormapLUT(static_cast<pcl::visualization::LookUpTableRepresentationProperties>(colormal_type), lut);
-    
-    // Map data to colors
-    std::vector<Color> colors (data.size());
-    for (size_t i = 0; i < data.size(); i++)
-    {
-      double rgb[3];
-      lut->GetColor(static_cast<double>(data[i]), rgb);
-      colors[i] = Color(rgb[0], rgb[1], rgb[2]);
-    }
-    
-    return colors;
-  }
+//  /** \brief Convert a single point with RGB information to grayscale
+//   *  \param[in,out]  point point to be converted to grayscale
+//   *  \note conversion is done using the formula used in OpenCV (http://docs.opencv.org/modules/imgproc/doc/miscellaneous_transformations.html)
+//   */
+//  inline
+//  std::vector<Color> colorizeData ( const std::vector<float> &data,
+//                                    const int colormal_type = 0
+//                                  )
+//  {
+//    // Get LUT
+//    vtkSmartPointer<vtkLookupTable> lut;
+//    pcl::visualization::getColormapLUT(static_cast<pcl::visualization::LookUpTableRepresentationProperties>(colormal_type), lut);
+//
+//    // Map data to colors
+//    std::vector<Color> colors (data.size());
+//    for (size_t i = 0; i < data.size(); i++)
+//    {
+//      double rgb[3];
+//      lut->GetColor(static_cast<double>(data[i]), rgb);
+//      colors[i] = Color(rgb[0], rgb[1], rgb[2]);
+//    }
+//
+//    return colors;
+//  }
   
   //----------------------------------------------------------------------------
   // Set rendering properties
@@ -165,46 +165,46 @@ namespace utl
       visualizer.setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_OPACITY, opacity, id);      
   }    
   
-  /** \brief modify the rendering properties of a colormap
-   *  \param[in] visualizer     visualizer object
-   *  \param[in] id             the point cloud object id prefix (default: cloud)
-   *  \param[in] colormal_type  colormap used \ref pcl::visualization::LookUpTableRepresentationProperties. If -1 colormap is unchanged
-   *  \param[in] range_auto     if true, colormap limits are set automatically from the data
-   *  \param[in] range_min      range minimum (if NaN colormap range is not updated)
-   *  \param[in] range_max      range maximum (if NaN colormap range is not updated)
-   *  \note this function sets colormap properties for clouds. It should be able to set colormap properties for shapes as well
-   */
-  inline
-  void setColormapRenderProps ( pcl::visualization::PCLVisualizer &visualizer,
-                                const std::string &id,
-                                const int colormal_type = -1,
-                                const bool  range_auto = false,
-                                const float range_min = std::numeric_limits<float>::quiet_NaN(),
-                                const float range_max = std::numeric_limits<float>::quiet_NaN()
-                              )
-  {
-    pcl::visualization::CloudActorMapPtr cloudActorMap = visualizer.getCloudActorMap();
-    pcl::visualization::ShapeActorMapPtr shapeActorMap = visualizer.getShapeActorMap();
-    if (cloudActorMap->find(id) != cloudActorMap->end())
-    {
-      if (colormal_type != -1)
-        visualizer.setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_LUT, colormal_type, id);
-      if (range_auto)
-        visualizer.setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_LUT_RANGE, pcl::visualization::PCL_VISUALIZER_LUT_RANGE_AUTO, id);
-      else if (!std::isnan(range_min) and !std::isnan(range_max))
-        visualizer.setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_LUT_RANGE, range_min, range_max, id);
-    }
-    else if (shapeActorMap->find(id) != shapeActorMap->end())
-    {
-      if (colormal_type != -1)
-        visualizer.setShapeRenderingProperties (pcl::visualization::PCL_VISUALIZER_LUT, colormal_type, id);
-      if (range_auto)
-        visualizer.setShapeRenderingProperties (pcl::visualization::PCL_VISUALIZER_LUT_RANGE, pcl::visualization::PCL_VISUALIZER_LUT_RANGE_AUTO, id);
-      // NOTE: this should be uncommented when proper support for shape LUT is implemented in PCL
-//         else if (!std::isnan(range_min) and !std::isnan(range_max))
-//           visualizer.setShapeRenderingProperties (pcl::visualization::PCL_VISUALIZER_LUT_RANGE, range_min, range_max, id);
-    }
-  }    
+//  /** \brief modify the rendering properties of a colormap
+//   *  \param[in] visualizer     visualizer object
+//   *  \param[in] id             the point cloud object id prefix (default: cloud)
+//   *  \param[in] colormal_type  colormap used \ref pcl::visualization::LookUpTableRepresentationProperties. If -1 colormap is unchanged
+//   *  \param[in] range_auto     if true, colormap limits are set automatically from the data
+//   *  \param[in] range_min      range minimum (if NaN colormap range is not updated)
+//   *  \param[in] range_max      range maximum (if NaN colormap range is not updated)
+//   *  \note this function sets colormap properties for clouds. It should be able to set colormap properties for shapes as well
+//   */
+//  inline
+//  void setColormapRenderProps ( pcl::visualization::PCLVisualizer &visualizer,
+//                                const std::string &id,
+//                                const int colormal_type = -1,
+//                                const bool  range_auto = false,
+//                                const float range_min = std::numeric_limits<float>::quiet_NaN(),
+//                                const float range_max = std::numeric_limits<float>::quiet_NaN()
+//                              )
+//  {
+//    pcl::visualization::CloudActorMapPtr cloudActorMap = visualizer.getCloudActorMap();
+//    pcl::visualization::ShapeActorMapPtr shapeActorMap = visualizer.getShapeActorMap();
+//    if (cloudActorMap->find(id) != cloudActorMap->end())
+//    {
+//      if (colormal_type != -1)
+//        visualizer.setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_LUT, colormal_type, id);
+//      if (range_auto)
+//        visualizer.setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_LUT_RANGE, pcl::visualization::PCL_VISUALIZER_LUT_RANGE_AUTO, id);
+//      else if (!std::isnan(range_min) and !std::isnan(range_max))
+//        visualizer.setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_LUT_RANGE, range_min, range_max, id);
+//    }
+//    else if (shapeActorMap->find(id) != shapeActorMap->end())
+//    {
+//      if (colormal_type != -1)
+//        visualizer.setShapeRenderingProperties (pcl::visualization::PCL_VISUALIZER_LUT, colormal_type, id);
+//      if (range_auto)
+//        visualizer.setShapeRenderingProperties (pcl::visualization::PCL_VISUALIZER_LUT_RANGE, pcl::visualization::PCL_VISUALIZER_LUT_RANGE_AUTO, id);
+//      // NOTE: this should be uncommented when proper support for shape LUT is implemented in PCL
+////         else if (!std::isnan(range_min) and !std::isnan(range_max))
+////           visualizer.setShapeRenderingProperties (pcl::visualization::PCL_VISUALIZER_LUT_RANGE, range_min, range_max, id);
+//    }
+//  }
   
   //----------------------------------------------------------------------------
   // Individual pointcloud visualization
@@ -252,47 +252,48 @@ namespace utl
     visualizer.addPointCloud<PointT>(cloud, color_handler, id);
     setPointCloudRenderProps(visualizer, id, point_size, Color(), opacity);
   }
-  /** \brief visualize a pointcloud colored according to the scalar data vector
-    * \param[in]  visualizer    visualizer object
-    * \param[in]  cloud         pointcloud
-    * \param[in]  data          data vector
-    * \param[in]  id            the point cloud object id (default: cloud_seg)
-    * \param[in]  point_size    size of the point (default 1.0)
-    */    
-  template <typename PointT, typename Scalar>
-  inline
-  void showPointCloudWithData ( pcl::visualization::PCLVisualizer &visualizer,
-                                const typename pcl::PointCloud<PointT>::ConstPtr &cloud,
-                                const Eigen::Matrix<Scalar, 1, Eigen::Dynamic> &data,
-                                const std::string &id = "cloud",
-                                const float point_size = -1.0
-                              )
-  {
-    pcl::visualization::PointCloudColorHandlerCustomData<PointT, float> color_handler (cloud, data);
-    visualizer.addPointCloud<PointT> (cloud, color_handler, id);
-    setPointCloudRenderProps(visualizer, id, point_size);
-  }
+
+//  /** \brief visualize a pointcloud colored according to the scalar data vector
+//    * \param[in]  visualizer    visualizer object
+//    * \param[in]  cloud         pointcloud
+//    * \param[in]  data          data vector
+//    * \param[in]  id            the point cloud object id (default: cloud_seg)
+//    * \param[in]  point_size    size of the point (default 1.0)
+//    */
+//  template <typename PointT, typename Scalar>
+//  inline
+//  void showPointCloudWithData ( pcl::visualization::PCLVisualizer &visualizer,
+//                                const typename pcl::PointCloud<PointT>::ConstPtr &cloud,
+//                                const Eigen::Matrix<Scalar, 1, Eigen::Dynamic> &data,
+//                                const std::string &id = "cloud",
+//                                const float point_size = -1.0
+//                              )
+//  {
+//    pcl::visualization::PointCloudColorHandlerCustomData<PointT, float> color_handler (cloud, data);
+//    visualizer.addPointCloud<PointT> (cloud, color_handler, id);
+//    setPointCloudRenderProps(visualizer, id, point_size);
+//  }
   
-  /** \brief visualize a pointcloud colored according to the scalar data vector
-    * \param[in]  visualizer    visualizer object
-    * \param[in]  cloud         pointcloud
-    * \param[in]  data          data vector
-    * \param[in]  id            the point cloud object id (default: cloud_seg)
-    * \param[in]  point_size    size of the point (default 1.0)
-    */    
-  template <typename PointT, typename Scalar>
-  inline
-  void showPointCloudWithData ( pcl::visualization::PCLVisualizer &visualizer,
-                                const typename pcl::PointCloud<PointT>::ConstPtr &cloud,
-                                const std::vector<Scalar> &data,
-                                const std::string &id = "cloud",
-                                const float point_size = -1.0
-                              )
-  {
-    pcl::visualization::PointCloudColorHandlerCustomData<PointT, float> color_handler (cloud, data);      
-    visualizer.addPointCloud<PointT> (cloud, color_handler, id);
-    setPointCloudRenderProps(visualizer, id, point_size);
-  }
+//  /** \brief visualize a pointcloud colored according to the scalar data vector
+//    * \param[in]  visualizer    visualizer object
+//    * \param[in]  cloud         pointcloud
+//    * \param[in]  data          data vector
+//    * \param[in]  id            the point cloud object id (default: cloud_seg)
+//    * \param[in]  point_size    size of the point (default 1.0)
+//    */
+//  template <typename PointT, typename Scalar>
+//  inline
+//  void showPointCloudWithData ( pcl::visualization::PCLVisualizer &visualizer,
+//                                const typename pcl::PointCloud<PointT>::ConstPtr &cloud,
+//                                const std::vector<Scalar> &data,
+//                                const std::string &id = "cloud",
+//                                const float point_size = -1.0
+//                              )
+//  {
+//    pcl::visualization::PointCloudColorHandlerCustomData<PointT, float> color_handler (cloud, data);
+//    visualizer.addPointCloud<PointT> (cloud, color_handler, id);
+//    setPointCloudRenderProps(visualizer, id, point_size);
+//  }
   
   /** \brief Show pointcloud normals
    *  \param[in]  visualizer  visualizer object
