@@ -82,12 +82,12 @@ int main(int argc, char** argv)
   // Get scene directory
   if (utl::isDirectory(inputPath))
   {
-    std::cout << "Input path is a directory" << std::endl;
+//    std::cout << "Input path is a directory" << std::endl;
     sceneDirname = inputPath;
   }
   else if (utl::isFile(inputPath))
   {
-    std::cout << "Input path is a file" << std::endl;
+//    std::cout << "Input path is a file" << std::endl;
     sceneDirname = utl::getParentDir(inputPath);
   }
   else
@@ -98,7 +98,7 @@ int main(int argc, char** argv)
   // Get scene cloud filename
   sceneCloudFilename = utl::fullfile(sceneDirname, "cloud.ply");
   std::cout << "Scene directory: " << sceneDirname << std::endl;
-  std::cout << "Pointcloud file: " << sceneCloudFilename << std::endl;
+//  std::cout << "Pointcloud file: " << sceneCloudFilename << std::endl;
   
   if (!utl::isFile(sceneCloudFilename))
   {
@@ -113,13 +113,13 @@ int main(int argc, char** argv)
   std::string symmetryFilename            = utl::fullfile(resultDirname, "symmetries.txt");
   std::string segmentationFilename        = utl::fullfile(resultDirname, "segments.txt");
   
-  std::cout << sceneCloudFilename << std::endl;
-  std::cout << sceneDirname << std::endl;
-  std::cout << octomapFilename << std::endl;
-  std::cout << tablePlaneFilename << std::endl;
-  std::cout << resultDirname << std::endl;
-  std::cout << symmetryFilename << std::endl;
-  std::cout << segmentationFilename << std::endl;
+//  std::cout << sceneCloudFilename << std::endl;
+//  std::cout << sceneDirname << std::endl;
+//  std::cout << octomapFilename << std::endl;
+//  std::cout << tablePlaneFilename << std::endl;
+//  std::cout << resultDirname << std::endl;
+//  std::cout << symmetryFilename << std::endl;
+//  std::cout << segmentationFilename << std::endl;
 
   //////////////////////////////////////////////////////////////////////////////
   ///////////////////////           PARAMETERS           ///////////////////////
@@ -290,7 +290,17 @@ int main(int argc, char** argv)
 
   if (!visualize)
     return 0;
-    
+
+  //Print instructions
+  std::cout << "-------------------------------" << std::endl;
+  std::cout << "|   Visualization controls    |" << std::endl;
+  std::cout << "-------------------------------" << std::endl;
+  std::cout << "| NUMPAD keys 1-4   | switch between different processing steps" << std::endl;
+  std::cout << "| Arrow keys        | switch between different segments/symmetries" << std::endl;
+  std::cout << "| NUMPAD Delete     | visualize occlusion space" << std::endl;
+  std::cout << "-------------------------------" << std::endl;
+
+  // Visualize
   VisState visState;
   pcl::visualization::PCLVisualizer visualizer;
   visualizer.setCameraPosition (  0.0, 0.0, -1.0,   // camera position

@@ -17,9 +17,7 @@ struct VisState
     , showNormals_ (false)
     , showOccupancy_ (false)
     , showSymmetry_ (true)
-    , showProfileCurve_ (false)
     , showReconstructedCloud_ (false)
-    , showAdjacency_ (false)
     , segIterator_ (0)
     , instanceIdIt_ (0)    
     , pointSize_ (5.0)
@@ -33,9 +31,7 @@ struct VisState
   bool showNormals_;
   bool showOccupancy_;
   bool showSymmetry_;
-  bool showProfileCurve_;
   bool showReconstructedCloud_;
-  bool showAdjacency_;
   
   int segIterator_;
   int instanceIdIt_;
@@ -84,16 +80,12 @@ void keyboard_callback (const pcl::visualization::KeyboardEvent &event, void *co
       visState->pointSize_ = std::max(1.0, visState->pointSize_ - 1.0);    
         
     // Additional display
-    else if (key == "KP_0")
-      visState->showAdjacency_ = !visState->showAdjacency_;
     else if (key == "KP_Decimal" || key == "KP_Delete")
       visState->showOccupancy_ = !visState->showOccupancy_;
     else if ((key == "n") || (key == "N"))
       visState->showNormals_ = !visState->showNormals_;
     else if ((key == "m") || (key == "M"))
       visState->showSymmetry_ = !visState->showSymmetry_;
-    else if ((key == "comma") || (key == "less"))
-      visState->showProfileCurve_ = !visState->showProfileCurve_;
     else if ((key == "Shift_L") || (key == "comma"))
       visState->showReconstructedCloud_ = !visState->showReconstructedCloud_;    
     
