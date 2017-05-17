@@ -1,3 +1,4 @@
 # Add examples
 add_subdirectory(rotational_segmentation)
+add_subdirectory(reflectional_segmentation)
 add_subdirectory(full_segmentation)
