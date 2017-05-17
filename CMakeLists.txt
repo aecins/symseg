@@ -96,8 +96,7 @@ link_libraries(${DYNAMICEDT3D_LIBRARIES})
 set (includes ./utilities
               ./occupancy_map
               ./segmentation
-              ./symmetry_segmentation
-              ./examples/include)
+              ./symmetry_segmentation)
 include_directories (${includes})
 
 ### ----------------------------------------------------------------------------
@@ -116,8 +115,7 @@ else()
 endif()
 
 ### ----------------------------------------------------------------------------
-### Executables
+### Examples
 ### ----------------------------------------------------------------------------
 
-add_executable (rotational_segmentation examples/src/rotational_segmentation.cpp )
-target_link_libraries (rotational_segmentation ${PCL_LIBRARIES} ${Boost_LIBRARIES})
+add_subdirectory(examples)
