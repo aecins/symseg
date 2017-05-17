@@ -18,7 +18,7 @@ namespace sym
   /** \brief Get the initial symmetries used for rotational symmetry
    * detection of a pointcloud.
    *  \param[in]  cloud               input cloud
-   *  \param[out] symmetries          reflectional symmetries
+   *  \param[out] symmetries          rotational symmetries
    *  \param[out] cloud_mean          mean of the pointcloud
    *  \return FALSE if input pointcloud has less than three points (can't run PCA)
    */
@@ -109,4 +109,4 @@ namespace sym
   struct RotSymRefineFunctorDiff : Eigen::NumericalDiff<RotSymRefineFunctor<PointT> > {};
 }
 
-#endif    // REFLECTIONAL_SYMMETRY_DETECTION_CORE_HPP
+#endif    // ROTATIONAL_SYMMETRY_DETECTION_CORE_HPP

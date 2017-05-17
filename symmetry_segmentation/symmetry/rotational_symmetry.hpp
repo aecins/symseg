@@ -16,7 +16,7 @@
 
 namespace sym
 {  
-  /** \brief Class representing a reflectional symmetry in 3D space. Symmetry is
+  /** \brief Class representing a rotational symmetry in 3D space. Symmetry is
    * represented as a 3D axis.
    */  
   class RotationalSymmetry
@@ -614,7 +614,7 @@ namespace sym
    * points onto the symmetry line.
    *  \param[in]  visualizer  object
    *  \param[in]  cloud       pointcloud
-   *  \param[in]  symmetry    reflectional symmetry
+   *  \param[in]  symmetry    rotational symmetry
    *  \param[in]  id          symmetry plane object id (default: symmetry)
    *  \param[in]  length      the length to which the line extends outside the pointcloud bounds
    *  \param[in]  line_width  line segment width
