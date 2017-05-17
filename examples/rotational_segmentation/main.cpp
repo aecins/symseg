@@ -406,7 +406,7 @@ int main(int argc, char** argv)
     
     // Spin once
     visualizer.spinOnce();
-    boost::this_thread::sleep (boost::posix_time::milliseconds (200));
+    boost::this_thread::sleep (boost::posix_time::milliseconds (10));
   }
   
   return 0;
