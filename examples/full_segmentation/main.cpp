@@ -215,7 +215,8 @@ int main(int argc, char** argv)
   
   // Occupancy map parameters
   float occupancyMapBBXInflationRadius = 0.15f;                                    // Inflation radius of the distance map bounding box relative to the scene cloud bounding box  
-  float occupancyMapMaxDistance = std::max(rotSegParams.max_occlusion_distance, rotDetParams.max_occlusion_distance);
+  float occupancyMapMaxDistance = std::max( std::max(rotSegParams.max_occlusion_distance, rotDetParams.max_occlusion_distance),
+                                            std::max(reflSegParams.max_occlusion_distance, reflDetParams.max_occlusion_distance));
   
   //////////////////////////////////////////////////////////////////////////////
   ///////////////////////           DATA LOAD            ///////////////////////
