@@ -668,7 +668,7 @@ int main(int argc, char** argv)
   std::cout << "-------------------------------" << std::endl;
   std::cout << "| NUMPAD keys 1-9   | switch between different processing steps" << std::endl;
   std::cout << "| Arrow keys        | switch between different segments/symmetries" << std::endl;
-  std::cout << "| NUMPAD Delete  0,o   | visualize occlusion space" << std::endl;
+  std::cout << "| NUMPAD Delete     | visualize occlusion space" << std::endl;
   std::cout << "-------------------------------" << std::endl;
 
   VisState visState;
@@ -824,7 +824,7 @@ int main(int argc, char** argv)
         
         utl::showFGSegmentationColor<PointNC>(visualizer, sceneCloud, reflSegmentsFinal[segId], "object", visState.pointSize_);
 
-        visualizer.addText("Reflectinal segments", 0, 150, 24, 1.0, 1.0, 1.0);
+        visualizer.addText("Reflectional segments", 0, 150, 24, 1.0, 1.0, 1.0);
         visualizer.addText("Segment " + std::to_string(segId+1) + " / " + std::to_string(reflSegmentMergedIdsRefined.size()), 15, 125, 24, 1.0, 1.0, 1.0);  
       }
       
