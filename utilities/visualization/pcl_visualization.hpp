@@ -163,7 +163,7 @@ namespace utl
       visualizer.setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, color.r, color.g, color.b, id);
     if (opacity > 0)
       visualizer.setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_OPACITY, opacity, id);      
-  }    
+  }
   
 //  /** \brief modify the rendering properties of a colormap
 //   *  \param[in] visualizer     visualizer object

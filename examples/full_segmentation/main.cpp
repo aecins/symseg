@@ -89,7 +89,6 @@ int main(int argc, char** argv)
   }
   else if (utl::isFile(inputPath))
   {
-//    std::cout << "Input path is a file" << std::endl;
     sceneDirname = utl::getParentDir(inputPath);
   }
   else
@@ -100,7 +99,6 @@ int main(int argc, char** argv)
   // Get scene cloud filename
   sceneCloudFilename = utl::fullfile(sceneDirname, "cloud.ply");
   std::cout << "Scene directory: " << sceneDirname << std::endl;
-//  std::cout << "Pointcloud file: " << sceneCloudFilename << std::endl;
   
   if (!utl::isFile(sceneCloudFilename))
   {
@@ -114,14 +112,6 @@ int main(int argc, char** argv)
   std::string resultDirname               = utl::fullfile(symmetrySegmentationDirname, outputDirname);
   std::string symmetryFilename            = utl::fullfile(resultDirname, "symmetries.txt");
   std::string segmentationFilename        = utl::fullfile(resultDirname, "segments.txt");
-  
-//  std::cout << sceneCloudFilename << std::endl;
-//  std::cout << sceneDirname << std::endl;
-//  std::cout << octomapFilename << std::endl;
-//  std::cout << tablePlaneFilename << std::endl;
-//  std::cout << resultDirname << std::endl;
-//  std::cout << symmetryFilename << std::endl;
-//  std::cout << segmentationFilename << std::endl;
 
   //////////////////////////////////////////////////////////////////////////////
   ///////////////////////           PARAMETERS           ///////////////////////
@@ -653,8 +643,14 @@ int main(int argc, char** argv)
 
   //////////////////////////////////////////////////////////////////////////////
   std::cout << "----------------------------" << std::endl;
-  std::cout << "Total time: " << (pcl::getTime() - totalStart) << " seconds." << std::endl;
+  float execution_time = (pcl::getTime() - totalStart);
+  std::cout << "Total time: " << execution_time << " seconds" << std::endl;
 
+  // Save timing information to a file.
+  std::ofstream outfile;
+  outfile.open("./full_segmentation_timings.txt", std::ios_base::app);
+  outfile << utl::getBasename(sceneDirname) << ": " << execution_time << "\n";
+  
   //////////////////////////////////////////////////////////////////////////////
   /////////////////////           VISUALIZATION           //////////////////////
   //////////////////////////////////////////////////////////////////////////////
