@@ -420,10 +420,10 @@ int main(int argc, char** argv)
   float execution_time = (pcl::getTime() - totalStart);
   std::cout << "Total time: " << execution_time << " seconds" << std::endl;
 
-  // Save timing information to a file.
-  std::ofstream outfile;
-  outfile.open("./reflectional_segmentation_timings.txt", std::ios_base::app);
-  outfile << utl::getBasename(sceneDirname) << ": " << execution_time << "\n";
+  // // Save timing information to a file.
+  // std::ofstream outfile;
+  // outfile.open("./reflectional_segmentation_timings.txt", std::ios_base::app);
+  // outfile << utl::getBasename(sceneDirname) << ": " << execution_time << "\n";
   
   //////////////////////////////////////////////////////////////////////////////
   /////////////////////           VISUALIZATION           //////////////////////
