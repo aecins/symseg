@@ -105,87 +105,37 @@ int main(int argc, char** argv)
   ///////////////////////           PARAMETERS           ///////////////////////
   //////////////////////////////////////////////////////////////////////////////
   
-  // Scene downsample parameters
+  // Scene downsample parameters.
   float voxel_size = 0.005f;
 
-//   // Reflectional symmetry detection parameters
-//   sym::ReflSymDetectParams reflDetParams;
-//   reflDetParams.voxel_size                  = 0.0f;                           // Voxel size used in vixelgrid downsample.
-//   reflDetParams.num_angle_divisions         = 5;                              // Controls number of initial reflectional symmetry candidate proposals.
-//                                                                               // Higher value - higher chance of reconvering correct symmetry at the cost of more false
-//                                                                               // positives and longer runtime.
-//   reflDetParams.flatness_threshold          = 0.005f;
-//   reflDetParams.refine_iterations           = 20;                             // Max number of optimization iterations used to refine the candidate symmetries.
-//   
-//   reflDetParams.max_correspondence_reflected_distance = 0.01f;                // Maximum allowed distance between the reflections of two points forming a symmetric 
-//                                                                               // correspondence.
-//   reflDetParams.max_occlusion_distance                = 0.03f;                // Occlusion distances are clipped to this value.
-//   reflDetParams.min_inlier_normal_angle               = pcl::deg2rad(15.0f);
-//   reflDetParams.max_inlier_normal_angle               = pcl::deg2rad(20.0f);
-//     
-//   reflDetParams.max_occlusion_score           = 0.01f;                        // Maximum allowed occlusion score for a valid symmetry.
-//   reflDetParams.min_cloud_inlier_score        = 0.5f;                         // Minimum allowed symmetric correspondence quality score normalized by the total number
-//                                                                               // of points in the cloud. Scale [0, 1].
-//   reflDetParams.min_corresp_inlier_score      = 0.8f;                         // Minimum allowed symmetric correspondence quality score normalized by the total number
-//                                                                               // of symmetric correspondences. Scale [0, 1].
-//   
-//   reflDetParams.symmetry_min_angle_diff       = pcl::deg2rad(7.0);
-//   reflDetParams.symmetry_min_distance_diff    = 0.01f;
-//   reflDetParams.max_reference_point_distance  = 0.3f;
-
-//   /home/aecins/Desktop/cloud_new_text.ply
-//     // Reflectional symmetry detection parameters
-//   sym::ReflSymDetectParams reflDetParams;
-//   reflDetParams.voxel_size                  = 0.1f;                           // Voxel size used in vixelgrid downsample.
-//   reflDetParams.num_angle_divisions         = 5;                              // Controls number of initial reflectional symmetry candidate proposals.
-//                                                                               // Higher value - higher chance of reconvering correct symmetry at the cost of more false
-//                                                                               // positives and longer runtime.
-//   reflDetParams.flatness_threshold          = 0.005f;
-//   reflDetParams.refine_iterations           = 20;                             // Max number of optimization iterations used to refine the candidate symmetries.
-//   
-//   reflDetParams.max_correspondence_reflected_distance = 0.01f;                // Maximum allowed distance between the reflections of two points forming a symmetric 
-//                                                                               // correspondence.
-//   reflDetParams.max_occlusion_distance                = 0.03f;                // Occlusion distances are clipped to this value.
-//   reflDetParams.min_inlier_normal_angle               = pcl::deg2rad(40.0f);  // A symmetric correspondence with a correspondence angle lower than this has a
-//                                                                               // the highest symmetric correspondence score i.e. 0.
-//   reflDetParams.max_inlier_normal_angle               = pcl::deg2rad(60.0f);  // A symmetric correspondence with a correspondence angle greater than this has a
-//                                                                               // the lowest symmetric correspondence score i.e. 1.
-//     
-//   reflDetParams.max_occlusion_score           = 0.01f;                        // Maximum allowed occlusion score for a valid symmetry.
-//   reflDetParams.min_cloud_inlier_score        = 0.5f;                         // Minimum allowed symmetric correspondence score normalized by the total number
-//                                                                               // of points in the cloud. Scale [0, 1].
-//   reflDetParams.min_corresp_inlier_score      = 0.8f;                         // Minimum allowed symmetric correspondence score normalized by the total number
-//                                                                               // of symmetric correspondences. Scale [0, 1].
-//   
-//   reflDetParams.symmetry_min_angle_diff       = pcl::deg2rad(7.0);
-//   reflDetParams.symmetry_min_distance_diff    = 0.01f;
-//   reflDetParams.max_reference_point_distance  = 0.3f;
-
-  
-    // Reflectional symmetry detection parameters
+  // Reflectional symmetry detection parameters
   sym::ReflSymDetectParams reflDetParams;
-  reflDetParams.voxel_size                  = 0.01f;
-  reflDetParams.num_angle_divisions         = 5;
+
+  reflDetParams.voxel_size                  = 0.01f;                          // Voxel size used in vixelgrid downsample.
+  reflDetParams.num_angle_divisions         = 5;                              // Controls number of initial reflectional symmetry candidate proposals.
+                                                                              // Higher value - higher chance of reconvering correct symmetry at the cost of more false
+                                                                              // positives and longer runtime.
   reflDetParams.flatness_threshold          = 0.005f;
-  reflDetParams.refine_iterations           = 20;
+  reflDetParams.refine_iterations           = 20;                             // Max number of optimization iterations used to refine the candidate symmetries.
   
-  reflDetParams.max_correspondence_reflected_distance = 0.01f;
-  reflDetParams.max_occlusion_distance                = 0.03f;
-  reflDetParams.min_inlier_normal_angle               = pcl::deg2rad(15.0f);
-  reflDetParams.max_inlier_normal_angle               = pcl::deg2rad(20.0f);
+  reflDetParams.max_correspondence_reflected_distance = 0.01f;                // Maximum allowed distance between the reflections of two points forming a symmetric 
+                                                                              // correspondence.
+  reflDetParams.max_occlusion_distance                = 0.03f;                // Occlusion distances are clipped to this value.
+  reflDetParams.min_inlier_normal_angle               = pcl::deg2rad(15.0f);  // A symmetric correspondence with a correspondence angle lower than this has a
+                                                                              // the highest symmetric correspondence score i.e. 0.
+  reflDetParams.max_inlier_normal_angle               = pcl::deg2rad(20.0f);  // A symmetric correspondence with a correspondence angle greater than this has a
+                                                                              // the lowest symmetric correspondence score i.e. 1.
     
-  reflDetParams.max_occlusion_score           = 0.01f;
-  reflDetParams.min_cloud_inlier_score        = 0.5f;
-  reflDetParams.min_corresp_inlier_score      = 0.8f;
+  reflDetParams.max_occlusion_score           = 0.01f;                        // Maximum allowed occlusion score for a valid symmetry.
+  reflDetParams.min_cloud_inlier_score        = 0.5f;                         // Minimum allowed symmetric correspondence score normalized by the total number
+                                                                              // of points in the cloud. Scale [0, 1].
+  reflDetParams.min_corresp_inlier_score      = 0.8f;                         // Minimum allowed symmetric correspondence score normalized by the total number
+                                                                              // of symmetric correspondences. Scale [0, 1].
   
   reflDetParams.symmetry_min_angle_diff       = pcl::deg2rad(7.0);
   reflDetParams.symmetry_min_distance_diff    = 0.01f;
-  reflDetParams.max_reference_point_distance  = 0.3f;  
-  
-  // Occupancy map parameters
-  float occupancyMapBBXInflationRadius = 0.15f;                                    // Inflation radius of the distance map bounding box relative to the scene cloud bounding box  
-  float occupancyMapMaxDistance = reflDetParams.max_occlusion_distance;
-  
+  reflDetParams.max_reference_point_distance  = 0.3f;
+    
   //////////////////////////////////////////////////////////////////////////////
   ///////////////////////           DATA LOAD            ///////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -311,14 +261,21 @@ int main(int argc, char** argv)
         std::vector<int> symmetryDisplayIds;
         std::string text;
 
-        visState.segIterator_ = utl::clampValueCircular<int>(visState.segIterator_, 0, reflSymmetry.size()-1);
-        int symId = visState.segIterator_;
-        
-        utl::showFGSegmentationColor<PointNC>(visualizer, sceneCloud, reflSymmetrySupport[symId], "object", visState.pointSize_);
-        
-        // Show symmetry
-        if (visState.showSymmetry_)
-          sym::showReflectionalSymmetry(visualizer, reflSymmetry[symId], "symmetry", 0.2);
+        if (reflSymmetry.size() > 0) {
+          visState.segIterator_ = utl::clampValueCircular<int>(visState.segIterator_, 0, reflSymmetry.size()-1);
+          int symId = visState.segIterator_;
+          
+          utl::showFGSegmentationColor<PointNC>(visualizer, sceneCloud, reflSymmetrySupport[symId], "object", visState.pointSize_);
+          
+          // Show symmetry
+          if (visState.showSymmetry_)
+            sym::showReflectionalSymmetry(visualizer, reflSymmetry[symId], "symmetry", 0.2);
+        } else {
+          visState.segIterator_ = -1;
+          utl::showPointCloudColor<PointNC>(visualizer, sceneCloud, "cloud", visState.pointSize_);
+          if (visState.showNormals_)
+            utl::showNormalCloud<PointNC>(visualizer, sceneCloud, 10, 0.02, "normals", visState.pointSize_, utl::green);          
+        }
         
         visualizer.addText("Reflectional symmetry ", 0, 150, 24, 1.0, 1.0, 1.0);
         visualizer.addText("Symmetry " + std::to_string(visState.segIterator_+1) + " / " + std::to_string(reflSymmetry.size()), 15, 125, 24, 1.0, 1.0, 1.0);        

@@ -75,7 +75,7 @@ void sym::mergeDuplicateReflSymmetries (  const std::vector<sym::ReflectionalSym
       sym::ReflectionalSymmetry tgtHypothesis = symmetries[tgtId];
       Eigen::Vector3f tgtReferencePoint = symmetry_reference_points[tgtId];
       
-      // If segments are too far apart, don't merged their symmetries
+      // If symmetries are too far apart, don't merge their symmetries
       if (max_reference_point_distance > 0.0f && utl::pointToPointDistance<float>(srcReferencePoint, tgtReferencePoint) > max_reference_point_distance)
         continue;
       
