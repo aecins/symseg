@@ -2,7 +2,7 @@
 
 SymSeg is a model-free method for segmenting objects and recovering their symmetries from multiple-view 3D pointclouds. The algorithm takes a pointcloud and an occupancy map of the scene as input and returns a set of object segmentation masks and corresponding symmetries. Please cite the following work if you use it for your research:
 
-*Article comming soon.*
+*Ecins, Aleksandrs; Ferm&uuml;ller, Cornelia; Aloimonos, Yiannis (2018) [Seeing Behing the Scene: Using Symmetry To Reason About Objects in Cluterred Environments](http://users.umiacs.umd.edu/~aecins/projects/symseg/symmetry_segmentation_IROS18.pdf). International Conference on Intelligent Robots.* [[Project Page](http://users.umiacs.umd.edu/~aecins/projects/symseg/)]
 
 This repository contains the C++ implementation of the algorithm and a sample test scene. Additional test scenes can be downloaded from the [Cluttered Tabletop Dataset](http://www.umiacs.umd.edu/~aecins/projects/symseg/dataset/CTD.tar.gz) (160 Mb).
 
