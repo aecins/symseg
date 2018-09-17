@@ -26,7 +26,7 @@ cmake ..
 make -j
 ```
 
-## Examples ##
+## Segmentation Examples ##
 The `examples` directory provides examples for three different segmentation modes:
 - `rotational_segmentation` segments rotational objects
 - `reflectional segmentation` segments reflectional objects
@@ -35,4 +35,11 @@ The `examples` directory provides examples for three different segmentation mode
 To segment the provided sample scene execute the following from the `bin` directory:
 ```
 ./rotational_segmentation ../sample_scene
+```
+
+## Symmetry Detection Examples ##
+
+Additionally we provide code for detecting symmetries in pointclouds of single objects. Note that input pointclouds must contain a single object and must have consistently oriented normals. To detect symmetries execute from the `bin` directory:
+```
+./reflectional_detection ../sample_object_cloud.ply
 ```
