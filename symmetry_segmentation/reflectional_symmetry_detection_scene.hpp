@@ -50,7 +50,7 @@ bool detectReflectionalSymmetryScene  ( const typename pcl::PointCloud<PointT>::
   
   if (scene_cloud->size() < 3)
     return true;
-
+  
   //----------------------------------------------------------------------------
   // Reflectional symmetry detection
   //----------------------------------------------------------------------------
@@ -71,7 +71,9 @@ bool detectReflectionalSymmetryScene  ( const typename pcl::PointCloud<PointT>::
     
     sym::ReflectionalSymmetryDetection<PointT> rsd (sym_detect_params);
     rsd.setInputCloud(segmentClouds[segId]);
-    rsd.setInputOcuppancyMap(scene_occupancy_map);
+    if (scene_occupancy_map) {
+      rsd.setInputOcuppancyMap(scene_occupancy_map);
+    }
     rsd.detect();
     rsd.filter();
     rsd.merge();

@@ -143,7 +143,8 @@ namespace sym
     inline
     void setInputCloud (const typename pcl::PointCloud<PointT>::ConstPtr &cloud);
     
-    /** \brief Provide a pointer to the input scene occupancy map.
+    /** \brief Provide a pointer to the input scene occupancy map. If occupancy
+     * map is not set, it will not be used for filtering out symmetries.
      *  \param cloud the const boost shared pointer to an occupancy map
      */
     inline

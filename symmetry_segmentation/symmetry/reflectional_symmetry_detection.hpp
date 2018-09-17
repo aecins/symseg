@@ -233,13 +233,7 @@ sym::ReflectionalSymmetryDetection<PointT>::detect ()
     std::cout << "[sym::ReflectionalSymmetryDetection::detect] input cloud is not set or it is empty." << std::endl;
     return false;
   }
-  
-  if (!occupancy_map_)
-  {
-    std::cout << "[sym::ReflectionalSymmetryDetection::detect] occupancy map is not set." << std::endl;
-    return false;
-  }
-  
+    
   cloud_mean_ = Eigen::Vector3f::Zero();
   cloud_ds_->clear();
   symmetries_refined_.clear();
@@ -291,7 +285,7 @@ sym::ReflectionalSymmetryDetection<PointT>::detect ()
     pcl::compute3DCentroid<PointT>(*cloud_, cloudMeanTMP);
     cloud_mean_ = cloudMeanTMP.head(3);
   }
-
+  
   //----------------------------------------------------------------------------
   // Refine initial symmetries
   
@@ -327,7 +321,6 @@ sym::ReflectionalSymmetryDetection<PointT>::detect ()
     if (!sym::refineReflSymGlobal<PointT> ( cloud_search_tree,
                                             cloud_ds_,
                                             cloud_mean_,
-                                            occupancy_map_,
                                             curSymmetry,
                                             curSymmetry,
                                             curCorrespondences,
@@ -351,15 +344,19 @@ sym::ReflectionalSymmetryDetection<PointT>::detect ()
                                               params_.max_inlier_normal_angle
                                             );
     
-    sym::reflSymPointOcclusionScores<PointT>  ( *cloud_ds_,
-                                                occupancy_map_,
-                                                curSymmetry,
-                                                curPointOcclusionScores,
-                                                params_.min_occlusion_distance,
-                                                params_.max_occlusion_distance
-                                              );
+    // If an occupancy map is available - calculate occlusion score. If not set occlusion scores to a value that will pass the occlusion filter.
+    if (occupancy_map_) {
+      sym::reflSymPointOcclusionScores<PointT>  ( *cloud_ds_,
+                                                  occupancy_map_,
+                                                  curSymmetry,
+                                                  curPointOcclusionScores,
+                                                  params_.min_occlusion_distance,
+                                                  params_.max_occlusion_distance
+                                                );
+    } else {
+      curPointOcclusionScores.resize(cloud_ds_->size(), 0.0f);
+    }
     
-
     curOcclusionScore = utl::mean(curPointOcclusionScores);
     
     float inlierScoreSum = 0;
