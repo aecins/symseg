@@ -48,7 +48,8 @@ bool oversegmentScene ( const typename pcl::PointCloud<PointT>::ConstPtr  &scene
                         typename pcl::PointCloud<PointT>::Ptr             &scene_cloud_ds,
                         utl::Map                                          &downsample_map,
                         std::vector<utl::Map>                             &overseg_segments,
-                        utl::Map                                          &overseg_segments_linear
+                        utl::Map                                          &overseg_segments_linear,
+                        bool                                              consistent_normals = true
                       )
 {
   scene_cloud_ds.reset(new pcl::PointCloud<PointT>);
@@ -86,7 +87,7 @@ bool oversegmentScene ( const typename pcl::PointCloud<PointT>::ConstPtr  &scene
   {
     utl::RegionGrowingSmoothness<PointT> rg;
     rg.setInputCloud(scene_cloud_ds);
-    rg.setConsistentNormals(true);
+    rg.setConsistentNormals(consistent_normals);
     rg.setSearchRadius (overseg_params.voxel_size * std::sqrt (3));
     rg.setMinSegmentSize(overseg_params.min_segment_size);
     float normalVariation   = overseg_params.smoothness[segParamId].first;
