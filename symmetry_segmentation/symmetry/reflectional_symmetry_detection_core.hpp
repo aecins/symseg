@@ -37,9 +37,6 @@
 #include <pcl/search/kdtree.h>
 #include <pcl/registration/correspondence_rejection_one_to_one.h>
 
-// Occupancy map
-#include <occupancy_map.hpp>
-
 // Symmetry
 #include <symmetry/refinement_base_functor.hpp>
 #include <symmetry/reflectional_symmetry.hpp>
@@ -356,33 +353,6 @@ namespace sym
     {
       // Get current rotational symmetry 
       ReflectionalSymmetry symmetry (x.head(3), x.tail(3));
-
-//       // Compute occlusion scores
-//       for(size_t i = 0; i < this->cloud_ds_->size(); i++)
-//       {
-//         Eigen::Vector3f srcPoint  = cloud_ds_->points[i].getVector3fMap();
-//         Eigen::Vector3f srcPointReflected   = symmetry.reflectPoint(srcPoint);
-//                 
-//         fvec(i) = 0.5 * std::max(0.0f, occupancy_->getNearestObstacleDistance(srcPointReflected) - 0.01f);
-//       }
-//       
-//       // Compute symmetry scores
-//       for(size_t i = 0; i < this->correspondences_.size(); i++)
-//       {
-//         int srcPointIndex = correspondences_[i].index_query;
-//         int tgtPointIndex = correspondences_[i].index_match;
-//         
-//         Eigen::Vector3f srcPoint  = cloud_ds_->points[srcPointIndex].getVector3fMap();
-//         Eigen::Vector3f srcNormal = cloud_ds_->points[srcPointIndex].getNormalVector3fMap();
-//         Eigen::Vector3f tgtPoint  = cloud_->points[tgtPointIndex].getVector3fMap();
-//         Eigen::Vector3f tgtNormal = cloud_->points[tgtPointIndex].getNormalVector3fMap();
-//                 
-//         // Reflect target point and normal
-//         Eigen::Vector3f tgtPointReflected   = symmetry.reflectPoint(tgtPoint);
-//         Eigen::Vector3f tgtNormalReflected  = symmetry.reflectNormal(tgtNormal);
-//                 
-//         fvec(srcPointIndex) += std::abs(utl::pointToPlaneSignedDistance<float>(srcPoint, tgtPointReflected, tgtNormalReflected));
-//       }
       
       // Compute fitness
       for(size_t i = 0; i < this->correspondences_.size(); i++)
@@ -400,10 +370,6 @@ namespace sym
         Eigen::Vector3f tgtNormalReflected  = symmetry.reflectNormal(tgtNormal);
         
         fvec(i) = std::abs(utl::pointToPlaneSignedDistance<float>(srcPoint, tgtPointReflected, tgtNormalReflected));
-        
-        // NOTE: why not use the symmetry fitness error here? I.e. the angular difference between the reflected normals?
-        // It seems like the point to plane distance works better, but need more checks
-//         fvec(i) = 1.0f - srcNormal.dot(tgtNormalReflected);
       }
       
       return 0;
@@ -414,10 +380,7 @@ namespace sym
     
     /** \brief Downsampled input cloud. */
     typename pcl::PointCloud<PointT>::ConstPtr cloud_ds_;
-    
-    /** \brief Scene occupancy. */
-    OccupancyMapConstPtr occupancy_;
-    
+        
     /** \brief Input correspondences. */
     pcl::Correspondences correspondences_;
         
@@ -458,7 +421,6 @@ namespace sym
   bool refineReflSymGlobal  ( const typename pcl::search::KdTree<PointT> &search_tree,
                               const typename pcl::PointCloud<PointT>::ConstPtr &cloud_ds,
                               const Eigen::Vector3f &cloud_mean,
-                              const OccupancyMapConstPtr &occupancy_map,
                               const sym::ReflectionalSymmetry &symmetry,
                               sym::ReflectionalSymmetry &symmetry_refined,
                               pcl::Correspondences &correspondences,
@@ -486,7 +448,6 @@ namespace sym
     sym::ReflSymRefineFunctorDiff<PointT> functor;
     functor.cloud_      = cloud;      
     functor.cloud_ds_   = cloud_ds;
-    functor.occupancy_  = occupancy_map;
     
     //--------------------------------------------------------------------------
     // Main loop

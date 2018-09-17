@@ -64,7 +64,6 @@ namespace sym
   inline
   float reflSymPointSymmetryScores  ( const typename pcl::search::KdTree<PointT> &cloud_search_tree,
                                       const pcl::PointCloud<PointT> &cloud_ds,
-//                                       const Eigen::Vector4f &table_plane,
                                       const std::vector<int> &cloud_boundary_point_ids,
                                       const std::vector<int> &cloud_ds_boundary_point_ids,
                                       const sym::ReflectionalSymmetry &symmetry,
@@ -88,8 +87,7 @@ namespace sym
 
     symmetric_correspondences.resize(0);
     point_symmetry_scores.resize(0);
-//     Eigen::Vector3f planePoint, planeNormal;
-//     utl::planeCoefficientsToPointNormal<float>(table_plane, planePoint, planeNormal);
+
     //--------------------------------------------------------------------------
     // Calculate point errors
     
@@ -122,10 +120,7 @@ namespace sym
         if (  std::find (cloud_ds_boundary_point_ids.begin(), cloud_ds_boundary_point_ids.end(), pointId) != cloud_ds_boundary_point_ids.end() ||
               std::find (cloud_boundary_point_ids.begin(), cloud_boundary_point_ids.end(), neighbours[0]) != cloud_boundary_point_ids.end() )
           continue;
-                
-//         if (utl::lineLineAngle<float>((srcPoint - tgtPoint).normalized(), symmetry.getNormal()) > pcl::deg2rad(15.0f))
-//           continue;
-                
+                                
         // Calculate error
         float symmetryScore = sym::getReflSymNormalFitError (srcNormal, tgtNormal, symmetry, true);
         
@@ -134,8 +129,6 @@ namespace sym
         if (symmetryScore > M_PI * 3 / 4)
           symmetryScore = M_PI - symmetryScore;
         
-//         if (symmetryScore > max_inlier_normal_angle)
-//           continue;
         symmetryScore = (symmetryScore - min_inlier_normal_angle) / (max_inlier_normal_angle - min_inlier_normal_angle);
         symmetryScore = utl::clampValue(symmetryScore, 0.0f, 1.0f);
         
