@@ -313,7 +313,10 @@ sym::ReflectionalSymmetryDetection<PointT>::detect ()
                                               cloud_ds_,
                                               symmetries_initial_[symId],
                                               curSymmetry,
-                                              curCorrespondences  )
+                                              curCorrespondences,
+                                              params_.voxel_size / 2,
+                                              pcl::rad2deg(10.0f),
+                                              params_.voxel_size * 4)
     )
       continue;
 
@@ -324,8 +327,10 @@ sym::ReflectionalSymmetryDetection<PointT>::detect ()
                                             curSymmetry,
                                             curSymmetry,
                                             curCorrespondences,
-                                            params_.refine_iterations )
-    )
+                                            params_.refine_iterations,
+                                            pcl::deg2rad(45.0f),
+                                            params_.voxel_size * 4,
+                                            params_.voxel_size))
       continue;
 
     // Score symmetry

@@ -167,7 +167,7 @@ int main(int argc, char** argv)
   
   // Rotational segmentation parameters
   sym::RotSymSegParams rotSegParams;
-  rotSegParams.voxel_size = 0.005f;
+  rotSegParams.voxel_size = sceneOversegParams.voxel_size;
   rotSegParams.min_normal_fit_angle    = pcl::deg2rad(0.0f);    // Minimum symmetry error of fit for a point
   rotSegParams.max_normal_fit_angle    = pcl::deg2rad(15.0f);    // Minimum symmetry error of fit for a point
   rotSegParams.min_occlusion_distance = 0.005f;
@@ -188,7 +188,7 @@ int main(int argc, char** argv)
 
   // Reflectional symmetry detection parameters
   sym::ReflSymDetectParams reflDetParams;
-  reflDetParams.voxel_size                  = 0.0f;
+  reflDetParams.voxel_size                  = sceneOversegParams.voxel_size;
   reflDetParams.num_angle_divisions         = 5;
   reflDetParams.flatness_threshold          = 0.005f;
   reflDetParams.refine_iterations           = 20;
