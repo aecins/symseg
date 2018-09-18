@@ -250,7 +250,7 @@ int main(int argc, char** argv)
       {
         utl::showPointCloudColor<PointNC>(visualizer, sceneCloud, "cloud", visState.pointSize_);
         if (visState.showNormals_)
-          utl::showNormalCloud<PointNC>(visualizer, sceneCloud, 10, 0.02, "normals", visState.pointSize_, utl::green);
+          utl::showNormalCloud<PointNC>(visualizer, sceneCloud, 10, voxel_size, "normals", visState.pointSize_, utl::green);
         
         visualizer.addText("Original cloud", 0, 150, 24, 1.0, 1.0, 1.0);
       }
@@ -266,18 +266,25 @@ int main(int argc, char** argv)
           visState.segIterator_ = utl::clampValueCircular<int>(visState.segIterator_, 0, reflSymmetry.size()-1);
           int symId = visState.segIterator_;
           
-          utl::showFGSegmentationColor<PointNC>(visualizer, sceneCloud, reflSymmetrySupport[symId], "object", visState.pointSize_);
+          utl::showFGSegmentationColor<PointNC>(visualizer, sceneCloud, reflSymmetrySupport[symId], "object", visState.pointSize_);                                    
           
           // Show symmetry
           if (visState.showSymmetry_)
-            sym::showReflectionalSymmetry(visualizer, reflSymmetry[symId], "symmetry", 0.2);
+            sym::showCloudReflectionalSymmetry<PointNC>(visualizer, sceneCloud, reflSymmetry[symId], "symmetry", 1.0);
+          
+          if (visState.showReconstructedCloud_) {
+            pcl::PointCloud<PointNC>::Ptr sceneCloudReflected  (new pcl::PointCloud<PointNC>);
+            reflSymmetry[symId].reflectCloud(*sceneCloud, *sceneCloudReflected);
+            utl::showPointCloud<PointNC>(visualizer, sceneCloudReflected, "cloud_reflected", visState.pointSize_, utl::blue);
+          }
+          
         } else {
           visState.segIterator_ = -1;
           utl::showPointCloudColor<PointNC>(visualizer, sceneCloud, "cloud", visState.pointSize_);
           if (visState.showNormals_)
-            utl::showNormalCloud<PointNC>(visualizer, sceneCloud, 10, 0.02, "normals", visState.pointSize_, utl::green);          
+            utl::showNormalCloud<PointNC>(visualizer, sceneCloud, 10, 0.02, "normals", visState.pointSize_, utl::green);
         }
-        
+                            
         visualizer.addText("Reflectional symmetry ", 0, 150, 24, 1.0, 1.0, 1.0);
         visualizer.addText("Symmetry " + std::to_string(visState.segIterator_+1) + " / " + std::to_string(reflSymmetry.size()), 15, 125, 24, 1.0, 1.0, 1.0);        
       }
