@@ -389,6 +389,34 @@ namespace sym
     return os;
   }
   
+  inline
+  bool writeSymmetriesToFile(const std::vector<ReflectionalSymmetry> &symmetries, const std::string& filename) {
+    // Check that parent directory exists
+    std::string parentDirname = utl::getParentDir(filename);
+    if (!utl::exists(parentDirname))
+    {
+      std::cout << "[sym::ReflectionalSymmetry::writeASCII] Parent directory does not exist ('" << parentDirname << "')." << std::endl;
+      return false;
+    }
+    
+    // Write to file
+    std::ofstream file(filename);
+    if (!file.is_open())
+    {
+      std::cout << "[sym::ReflectionalSymmetry::writeASCII] Could not open file for writing ('" << filename << "')." << std::endl;
+      return false;
+    }
+    else
+    {
+      for (size_t symId = 0; symId < symmetries.size(); symId++) {
+        symmetries[symId].writeASCII(file);
+      }
+    }
+    file.close();
+    
+    return true;    
+  }
+  
   /** \brief Visualize symmetry as a rectangular polygon
    *  \param[in] visualizer object
    *  \param[in] symmetry reflectional symmetry

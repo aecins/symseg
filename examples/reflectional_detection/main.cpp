@@ -51,12 +51,11 @@
 typedef pcl::PointXYZRGBNormal PointNC;
 
 ////////////////////////////////////////////////////////////////////////////////
-void parseCommandLine(int argc, char** argv, std::string &inputCloudPath, std::string &outputDirnamePath, bool &visualize, bool &save)
+void parseCommandLine(int argc, char** argv, std::string &inputCloudPath, std::string &outputDirnamePath, bool &visualize)
 {
   inputCloudPath = "";
   outputDirnamePath = "";
   visualize = true;
-  save = false;
   
   // Check parameters
   for (size_t i = 1; i < static_cast<size_t>(argc); i++)
@@ -66,8 +65,6 @@ void parseCommandLine(int argc, char** argv, std::string &inputCloudPath, std::s
     if (curParameter == "-novis")
       visualize = false;   
     
-    else if (curParameter == "-save")
-      save = true;
         
     else if (inputCloudPath == "" && curParameter[0] != '-')
       inputCloudPath = curParameter;
@@ -88,8 +85,8 @@ int main(int argc, char** argv)
   //----------------------------------------------------------------------------
   
   std::string inputCloudPath, outputDirnamePath;
-  bool visualize, save;
-  parseCommandLine(argc, argv, inputCloudPath, outputDirnamePath, visualize, save);
+  bool visualize;
+  parseCommandLine(argc, argv, inputCloudPath, outputDirnamePath, visualize);
 
   //----------------------------------------------------------------------------
   // Generate paths and check command line arguments
@@ -200,6 +197,13 @@ int main(int argc, char** argv)
   float execution_time = (pcl::getTime() - totalStart);
   std::cout << "Total time: " << execution_time << " seconds" << std::endl;
 
+  // Save result to file.
+  if (!outputDirnamePath.empty()) {
+    std::string outputFilePath = utl::fullfile(outputDirnamePath, "symmetries.txt");
+    std::cout << "Saving segmentation results to " << outputFilePath << std::cout;
+    sym::writeSymmetriesToFile(reflSymmetry, outputFilePath);
+  }
+  
   // // Save timing information to a file.
   // std::ofstream outfile;
   // outfile.open("./reflectional_segmentation_timings.txt", std::ios_base::app);
