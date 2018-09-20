@@ -200,7 +200,7 @@ int main(int argc, char** argv)
   // Save result to file.
   if (!outputDirnamePath.empty()) {
     std::string outputFilePath = utl::fullfile(outputDirnamePath, "symmetries.txt");
-    std::cout << "Saving segmentation results to " << outputFilePath << std::cout;
+    std::cout << "Saving segmentation results to " << outputFilePath << std::endl;
     sym::writeSymmetriesToFile(reflSymmetry, outputFilePath);
   }
   
