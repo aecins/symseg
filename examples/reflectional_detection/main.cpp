@@ -38,9 +38,6 @@
 #include "filesystem/filesystem.hpp"
 #include "eigen.hpp"
 
-// Occupancy map
-#include "occupancy_map.hpp"
-
 // Symseg
 #include "scene_oversegmentation.hpp"
 #include "reflectional_symmetry_detection_scene.hpp"
@@ -98,12 +95,13 @@ int main(int argc, char** argv)
     return -1;
   }
   
-  //////////////////////////////////////////////////////////////////////////////
-  ///////////////////////           PARAMETERS           ///////////////////////
-  //////////////////////////////////////////////////////////////////////////////
+  //----------------------------------------------------------------------------
+  // Parameters
+  //----------------------------------------------------------------------------
   
-  // Scene downsample parameters.
-  float voxel_size = 0.005f;
+  // Scene scaling and downsample parameters.
+  float downsample_diagonal_length = 1.0f;                                    // Pointcloud will be scaled such that it's bounding box diagonal is equal to this value.
+  float voxel_size = 0.008f;                                                  // Voxel size used for downsampling after scaling.
 
   // Reflectional symmetry detection parameters
   sym::ReflSymDetectParams reflDetParams;
@@ -134,10 +132,10 @@ int main(int argc, char** argv)
   reflDetParams.symmetry_min_distance_diff    = 0.01f;
   reflDetParams.max_reference_point_distance  = 0.3f;
     
-  //////////////////////////////////////////////////////////////////////////////
-  ///////////////////////           DATA LOAD            ///////////////////////
-  //////////////////////////////////////////////////////////////////////////////
-
+  //----------------------------------------------------------------------------
+  // Load data.
+  //----------------------------------------------------------------------------
+  
   std::cout << "Loading data..." << std::endl;
   
   pcl::PointCloud<PointNC>::Ptr sceneCloudHighRes  (new pcl::PointCloud<PointNC>);
@@ -145,27 +143,51 @@ int main(int argc, char** argv)
     return -1;
 
   //----------------------------------------------------------------------------
+  // Demean and rescale the scene.
+  //----------------------------------------------------------------------------
+  
+  pcl::PCA<PointNC> pca;
+  pca.setInputCloud(sceneCloudHighRes);
+
+  // Find pointcloud diagonal length.
+  pcl::PointCloud<PointNC>::Ptr sceneCloudHighResAligned  (new pcl::PointCloud<PointNC>);
+  pca.project(*sceneCloudHighRes, *sceneCloudHighResAligned);
+  
+  PointNC bbxMin, bbxMax;
+  pcl::getMinMax3D(*sceneCloudHighResAligned, bbxMin, bbxMax);
+  float diagonalLength = (bbxMax.getVector3fMap() - bbxMin.getVector3fMap()).norm();
+  float scalingFactor = downsample_diagonal_length / diagonalLength;
+
+  // Find pointcloud mean.
+  Eigen::Vector4f cloudCentroid = pca.getMean();
+  
+  // Demean and scal pointcloud
+  for (size_t point_id = 0; point_id < sceneCloudHighRes->size(); point_id++)
+  {
+    sceneCloudHighRes->points[point_id].getVector3fMap() -= cloudCentroid.head(3);
+    sceneCloudHighRes->points[point_id].getVector3fMap() *= scalingFactor;
+  }
+    
+  //----------------------------------------------------------------------------
   // Downsample the scene.
   //----------------------------------------------------------------------------
   
-  std::cout << "Downsampling input pointcloud..." << std::endl;
   double start = pcl::getTime ();
   double totalStart = pcl::getTime ();
   
-  pcl::PointCloud<PointNC>::Ptr sceneCloud (new pcl::PointCloud<PointNC>);
+  pcl::PointCloud<PointNC>::Ptr     sceneCloud                (new pcl::PointCloud<PointNC>);  
   
+  std::cout << "Downsampling input pointcloud..." << std::endl;
   utl::Downsample<PointNC> ds;
   ds.setInputCloud(sceneCloudHighRes);
   ds.setDownsampleMethod(utl::Downsample<PointNC>::AVERAGE);
   ds.setLeafSize(voxel_size);
   ds.filter(*sceneCloud);
-  
-  //////////////////////////////////////////////////////////////////////////////
-  //////////////////////           REFLECTIONAL           //////////////////////
-  //////////////////////////////////////////////////////////////////////////////
-    
+  std::cout << sceneCloudHighRes->size() << " points in original cloud." << std::endl;
+  std::cout << sceneCloud->size() << " points after downsampling." << std::endl;
+      
   //----------------------------------------------------------------------------
-  // Symmetry detection
+  // Reflectional symmetry detection
   //----------------------------------------------------------------------------
     
   std::cout << "Detecting reflectional symmetry..." << std::endl;
@@ -192,16 +214,31 @@ int main(int argc, char** argv)
   std::cout << "  " << reflSymmetry.size() << " symmetries detected." << std::endl;
   std::cout << "  " << (pcl::getTime() - start) << " seconds." << std::endl;  
 
-  //////////////////////////////////////////////////////////////////////////////
   std::cout << "----------------------------" << std::endl;
   float execution_time = (pcl::getTime() - totalStart);
   std::cout << "Total time: " << execution_time << " seconds" << std::endl;
 
+  //----------------------------------------------------------------------------
+  // Save results to file
+  //----------------------------------------------------------------------------
+
+  // Before saving the symmetries we need to undo the effects of scaling and 
+  // demeaning the scene.
+  std::vector<sym::ReflectionalSymmetry>  reflSymmetryUnprojected;
+  
+  for (size_t sym_id = 0; sym_id < reflSymmetry.size(); sym_id++)
+  {
+    sym::ReflectionalSymmetry symmetryUnprojected = reflSymmetry[sym_id];
+    Eigen::Vector3f origin = symmetryUnprojected.getOrigin();
+    symmetryUnprojected.setOrigin(origin / scalingFactor + cloudCentroid.head(3));
+    reflSymmetryUnprojected.push_back(symmetryUnprojected);
+  }
+  
   // Save result to file.
   if (!outputDirnamePath.empty()) {
     std::string outputFilePath = utl::fullfile(outputDirnamePath, "symmetries.txt");
     std::cout << "Saving segmentation results to " << outputFilePath << std::endl;
-    sym::writeSymmetriesToFile(reflSymmetry, outputFilePath);
+    sym::writeSymmetriesToFile(reflSymmetryUnprojected, outputFilePath);
   }
   
   // // Save timing information to a file.
@@ -209,9 +246,9 @@ int main(int argc, char** argv)
   // outfile.open("./reflectional_segmentation_timings.txt", std::ios_base::app);
   // outfile << utl::getBasename(sceneDirname) << ": " << execution_time << "\n";
   
-  //////////////////////////////////////////////////////////////////////////////
-  /////////////////////           VISUALIZATION           //////////////////////
-  //////////////////////////////////////////////////////////////////////////////
+  //----------------------------------------------------------------------------
+  // Visualization.
+  //----------------------------------------------------------------------------
 
   if (!visualize)
     return 0;
@@ -227,11 +264,11 @@ int main(int argc, char** argv)
 
   VisState visState;
   pcl::visualization::PCLVisualizer visualizer;
-  Eigen::Vector4f cloudCentroid;
-  pcl::compute3DCentroid<PointNC>(*sceneCloud, cloudCentroid);
+  Eigen::Vector4f cloudCentroidVis;
+  pcl::compute3DCentroid<PointNC>(*sceneCloud, cloudCentroidVis);
   
   visualizer.setCameraPosition (  0.0, 0.0, -1.0,   // camera position
-                                  cloudCentroid[0], cloudCentroid[1], cloudCentroid[2],   // viewpoint
+                                  cloudCentroidVis[0], cloudCentroidVis[1], cloudCentroidVis[2],   // viewpoint
                                   0.0, -1.0, 0.0,   // normal
                                   0.0);            // viewport
   visualizer.setBackgroundColor (utl::bgColor.r, utl::bgColor.g, utl::bgColor.b);
@@ -258,20 +295,14 @@ int main(int argc, char** argv)
         
         visualizer.addText("Original cloud", 0, 150, 24, 1.0, 1.0, 1.0);
       }
-            
+
       else if ( visState.cloudDisplay_ == VisState::REFLECTIONAL_SYMMETRIES)
       {
-        std::vector<std::vector<int> > symmetrySegmentsDisplay;
-        std::vector<sym::ReflectionalSymmetry> symmetryDisplay;
-        std::vector<int> symmetryDisplayIds;
-        std::string text;
-
         if (reflSymmetry.size() > 0) {
           visState.segIterator_ = utl::clampValueCircular<int>(visState.segIterator_, 0, reflSymmetry.size()-1);
-          int symId = visState.segIterator_;
-          
-          utl::showFGSegmentationColor<PointNC>(visualizer, sceneCloud, reflSymmetrySupport[symId], "object", visState.pointSize_);                                    
-          
+          int symId = visState.segIterator_;          
+          utl::showPointCloudColor<PointNC> (visualizer, sceneCloud, "object", visState.pointSize_);
+
           // Show symmetry
           if (visState.showSymmetry_)
             sym::showCloudReflectionalSymmetry<PointNC>(visualizer, sceneCloud, reflSymmetry[symId], "symmetry", 1.0);

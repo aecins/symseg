@@ -303,6 +303,9 @@ sym::ReflectionalSymmetryDetection<PointT>::detect ()
   // NOTE: it turns out that putting parralel for statement here
   // runs more that twice faster than parallelizing the loop that calls
   // reflectional symmetry detection
+  
+  std::cout << "Initial symmetries: " << symmetries_initial_.size() << std::endl;
+  
   # pragma omp parallel for
   for (size_t symId = 0; symId < symmetries_initial_.size(); symId++)
   {
