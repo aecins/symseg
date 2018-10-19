@@ -1,0 +1,19 @@
+downsample_diagonal_length: 1.0
+voxel_size: 0.008
+reflectional_symmetry_detection_options {
+  # NOTE: symmetry detection voxel_size and max_correspondence_reflected_distance
+  # are set in the executeable based on the voxel_size value above.
+  num_angle_divisions: 5
+  flatness_threshold: 0.005
+  refine_iterations: 20
+  min_occlusion_distance: 0.01
+  max_occlusion_distance: 0.03
+  min_inlier_normal_angle_deg: 15
+  max_inlier_normal_angle_deg: 20
+  max_occlusion_score: 0.01
+  min_cloud_inlier_score: 0.5
+  min_corresp_inlier_score: 0.7
+  symmetry_min_angle_diff_deg: 7
+  symmetry_min_distance_diff: 0.01
+  max_reference_point_distance: 0.3
+}

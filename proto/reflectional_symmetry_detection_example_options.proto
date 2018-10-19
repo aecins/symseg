@@ -1,0 +1,16 @@
+syntax = "proto2";
+
+import "reflectional_symmetry_detection_options.proto";
+
+package proto;
+
+message ReflectionalSymmetryDetectionExampleOptions {
+  // Pointcloud will be scaled such that it's bounding box diagonal is equal to this value.
+  optional float downsample_diagonal_length = 1;
+
+  // Voxel size used for downsampling after scaling.
+  optional float voxel_size = 2;
+
+  // Reflectional symmetry detection options.
+  optional proto.ReflectionalSymmetryDetectionOptions reflectional_symmetry_detection_options = 3;
+}

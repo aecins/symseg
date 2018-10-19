@@ -9,6 +9,7 @@ This repository contains the C++ implementation of the algorithm and a sample te
 ## Dependencies ##
 - [PCL](https://github.com/PointCloudLibrary/pcl)
 - [OctoMap](https://github.com/OctoMap/octomap) (with dynamicEDT3D)
+- [protobuffer](https://developers.google.com/protocol-buffers/)
 
 Tested in Ubuntu 14.04 and 16.04 with PCL 1.8.0 and Octomap 1.8.1
 

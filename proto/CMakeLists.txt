@@ -1,0 +1,6 @@
+PROTOBUF_GENERATE_CPP(PROTO_SRC PROTO_HEADER reflectional_symmetry_detection_options.proto)
+ADD_LIBRARY(reflectional_symmetry_detection_options ${PROTO_HEADER} ${PROTO_SRC})
+
+PROTOBUF_GENERATE_CPP(PROTO_SRCL PROTO_HEADERL reflectional_symmetry_detection_example_options.proto)
+ADD_LIBRARY(reflectional_symmetry_detection_example_options ${PROTO_HEADERL} ${PROTO_SRCL})
+target_link_libraries (reflectional_symmetry_detection_example_options reflectional_symmetry_detection_options)

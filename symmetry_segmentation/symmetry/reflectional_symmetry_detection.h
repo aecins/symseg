@@ -35,6 +35,7 @@
 
 #include <symmetry/reflectional_symmetry.hpp>
 #include <occupancy_map.hpp>
+#include "../build/proto/reflectional_symmetry_detection_options.pb.h"
 
 namespace sym
 {
@@ -44,6 +45,28 @@ namespace sym
   
   struct ReflSymDetectParams
   {
+    // Empty constructor
+    ReflSymDetectParams() {};
+    
+    // Constructor from proto message.
+    ReflSymDetectParams(const proto::ReflectionalSymmetryDetectionOptions& options) 
+      : voxel_size (options.voxel_size()),
+        num_angle_divisions (options.num_angle_divisions()),
+        flatness_threshold (options.flatness_threshold()),
+        refine_iterations (options.refine_iterations()),
+        max_correspondence_reflected_distance (options.max_correspondence_reflected_distance()),
+        min_occlusion_distance (options.min_occlusion_distance()),
+        max_occlusion_distance (options.max_occlusion_distance()),
+        min_inlier_normal_angle (pcl::deg2rad(options.min_inlier_normal_angle_deg())),
+        max_inlier_normal_angle (pcl::deg2rad(options.max_inlier_normal_angle_deg())),
+        max_occlusion_score (options.max_occlusion_score()),
+        min_cloud_inlier_score (options.min_cloud_inlier_score()),
+        min_corresp_inlier_score (options.min_cloud_inlier_score()),
+        symmetry_min_angle_diff (pcl::deg2rad(options.symmetry_min_angle_diff_deg())),
+        symmetry_min_distance_diff (options.symmetry_min_distance_diff()),
+        max_reference_point_distance (options.max_reference_point_distance())
+    {};
+    
     // Downsample parameters
     float voxel_size = 0.0f;
     

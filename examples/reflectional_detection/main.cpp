@@ -42,6 +42,10 @@
 #include "scene_oversegmentation.hpp"
 #include "reflectional_symmetry_detection_scene.hpp"
 
+// Proto
+#include "google/protobuf/text_format.h"
+#include "../build/proto/reflectional_symmetry_detection_example_options.pb.h"
+
 // Project includes
 #include "vis.hpp"
 
@@ -99,38 +103,26 @@ int main(int argc, char** argv)
   // Parameters
   //----------------------------------------------------------------------------
   
-  // Scene scaling and downsample parameters.
-  float downsample_diagonal_length = 1.0f;                                    // Pointcloud will be scaled such that it's bounding box diagonal is equal to this value.
-  float voxel_size = 0.008f;                                                  // Voxel size used for downsampling after scaling.
+  // NOTE: you can change the parameters of the algorithm by modifying the
+  // values in the file below.
+  std::string options_file_path = "../examples/reflectional_detection/config.pbtxt";
+  if (!utl::isFile(options_file_path))
+  {
+    std::cout << "Could not find config file " << options_file_path << ".";
+    return -1;
+  }
 
+  proto::ReflectionalSymmetryDetectionExampleOptions options;
+  std::ifstream input(options_file_path);
+  std::stringstream input_string;
+  input_string << input.rdbuf();  
+  google::protobuf::TextFormat::ParseFromString(input_string.str(), &options);
+  
   // Reflectional symmetry detection parameters
-  sym::ReflSymDetectParams reflDetParams;
-
-  reflDetParams.voxel_size                  = voxel_size * 2;                 // Voxel size used in vixelgrid downsample.
-  reflDetParams.num_angle_divisions         = 5;                              // Controls number of initial reflectional symmetry candidate proposals.
-                                                                              // Higher value - higher chance of reconvering correct symmetry at the cost of more false
-                                                                              // positives and longer runtime.
-  reflDetParams.flatness_threshold          = 0.005f;
-  reflDetParams.refine_iterations           = 20;                             // Max number of optimization iterations used to refine the candidate symmetries.
-  
-  reflDetParams.max_correspondence_reflected_distance =                       // Maximum allowed distance between the reflections of two points forming a symmetric 
+  sym::ReflSymDetectParams reflDetParams(options.reflectional_symmetry_detection_options());
+  reflDetParams.voxel_size                  = options.voxel_size() * 2;   // Voxel size used in voxelgrid downsample.  
+  reflDetParams.max_correspondence_reflected_distance =                   // Maximum allowed distance between the reflections of two points forming a symmetric 
                                         reflDetParams.voxel_size / 2;
-                                                                              // correspondence.
-  reflDetParams.max_occlusion_distance                = 0.03f;                // Occlusion distances are clipped to this value.
-  reflDetParams.min_inlier_normal_angle               = pcl::deg2rad(15.0f);  // A symmetric correspondence with a correspondence angle lower than this has a
-                                                                              // the highest symmetric correspondence score i.e. 0.
-  reflDetParams.max_inlier_normal_angle               = pcl::deg2rad(20.0f);  // A symmetric correspondence with a correspondence angle greater than this has a
-                                                                              // the lowest symmetric correspondence score i.e. 1.
-    
-  reflDetParams.max_occlusion_score           = 0.01f;                        // Maximum allowed occlusion score for a valid symmetry.
-  reflDetParams.min_cloud_inlier_score        = 0.5f;                         // Minimum allowed symmetric correspondence score normalized by the total number
-                                                                              // of points in the cloud. Scale [0, 1].
-  reflDetParams.min_corresp_inlier_score      = 0.7f;                         // Minimum allowed symmetric correspondence score normalized by the total number
-                                                                              // of symmetric correspondences. Scale [0, 1].
-  
-  reflDetParams.symmetry_min_angle_diff       = pcl::deg2rad(7.0);
-  reflDetParams.symmetry_min_distance_diff    = 0.01f;
-  reflDetParams.max_reference_point_distance  = 0.3f;
     
   //----------------------------------------------------------------------------
   // Load data.
@@ -156,7 +148,7 @@ int main(int argc, char** argv)
   PointNC bbxMin, bbxMax;
   pcl::getMinMax3D(*sceneCloudHighResAligned, bbxMin, bbxMax);
   float diagonalLength = (bbxMax.getVector3fMap() - bbxMin.getVector3fMap()).norm();
-  float scalingFactor = downsample_diagonal_length / diagonalLength;
+  float scalingFactor = options.downsample_diagonal_length() / diagonalLength;
 
   // Find pointcloud mean.
   Eigen::Vector4f cloudCentroid = pca.getMean();
@@ -181,7 +173,7 @@ int main(int argc, char** argv)
   utl::Downsample<PointNC> ds;
   ds.setInputCloud(sceneCloudHighRes);
   ds.setDownsampleMethod(utl::Downsample<PointNC>::AVERAGE);
-  ds.setLeafSize(voxel_size);
+  ds.setLeafSize(options.voxel_size());
   ds.filter(*sceneCloud);
   std::cout << sceneCloudHighRes->size() << " points in original cloud." << std::endl;
   std::cout << sceneCloud->size() << " points after downsampling." << std::endl;
@@ -291,7 +283,7 @@ int main(int argc, char** argv)
       {
         utl::showPointCloudColor<PointNC>(visualizer, sceneCloud, "cloud", visState.pointSize_);
         if (visState.showNormals_)
-          utl::showNormalCloud<PointNC>(visualizer, sceneCloud, 10, voxel_size, "normals", visState.pointSize_, utl::green);
+          utl::showNormalCloud<PointNC>(visualizer, sceneCloud, 10, options.voxel_size(), "normals", visState.pointSize_, utl::green);
         
         visualizer.addText("Original cloud", 0, 150, 24, 1.0, 1.0, 1.0);
       }

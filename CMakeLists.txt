@@ -90,6 +90,24 @@ include_directories(${DYNAMICEDT3D_INCLUDE_DIRS})
 link_libraries(${DYNAMICEDT3D_LIBRARIES})
 
 ### ----------------------------------------------------------------------------
+### Protobuffer
+### ----------------------------------------------------------------------------
+
+include(FindProtobuf)
+find_package(Protobuf REQUIRED)
+message (STATUS "")
+if (PROTOBUF_FOUND)
+  message (STATUS " ---------------------------")
+  message (STATUS " Found Protobuf")
+  message (STATUS "     * include dirs: ${PROTOBUF_INCLUDE_DIRS}")
+  message (STATUS "     * libraries:    ${PROTOBUF_LIBRARIES}")
+else()
+  message (FATAL_ERROR : "Protobuf NOT FOUND!")  
+endif()
+
+include_directories(${PROTOBUF_INCLUDE_DIRS})
+
+### ----------------------------------------------------------------------------
 ### Project dependencies
 ### ----------------------------------------------------------------------------
 
@@ -119,3 +137,4 @@ endif()
 ### ----------------------------------------------------------------------------
 
 add_subdirectory(examples)
+add_subdirectory(proto)
