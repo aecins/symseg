@@ -1,6 +1,5 @@
-PROTOBUF_GENERATE_CPP(PROTO_SRC PROTO_HEADER reflectional_symmetry_detection_options.proto)
-ADD_LIBRARY(reflectional_symmetry_detection_options ${PROTO_HEADER} ${PROTO_SRC})
-
-PROTOBUF_GENERATE_CPP(PROTO_SRCL PROTO_HEADERL reflectional_symmetry_detection_example_options.proto)
-ADD_LIBRARY(reflectional_symmetry_detection_example_options ${PROTO_HEADERL} ${PROTO_SRCL})
-target_link_libraries (reflectional_symmetry_detection_example_options reflectional_symmetry_detection_options)
+file(GLOB ProtoFiles "${CMAKE_CURRENT_SOURCE_DIR}/*proto")
+PROTOBUF_GENERATE_CPP(ProtoSources ProtoHeaders ${ProtoFiles})
+ADD_LIBRARY(proto ${ProtoHeaders} ${ProtoSources})
+target_include_directories(proto PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+target_link_libraries(proto ${PROTOBUF_LIBRARIES})

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
 project(symseg)
 set (CMAKE_BUILD_TYPE Release)
@@ -105,7 +105,7 @@ else()
   message (FATAL_ERROR : "Protobuf NOT FOUND!")  
 endif()
 
-include_directories(${PROTOBUF_INCLUDE_DIRS})
+add_subdirectory(proto) # Generate headers and libraries for proto files.
 
 ### ----------------------------------------------------------------------------
 ### Project dependencies
@@ -114,7 +114,8 @@ include_directories(${PROTOBUF_INCLUDE_DIRS})
 set (includes ./utilities
               ./occupancy_map
               ./segmentation
-              ./symmetry_segmentation)
+              ./symmetry_segmentation
+              ${CMAKE_BINARY_DIR}/proto)  # This is required to make sure header files above can find header files generated for protos.
 include_directories (${includes})
 
 ### ----------------------------------------------------------------------------
@@ -137,4 +138,3 @@ endif()
 ### ----------------------------------------------------------------------------
 
 add_subdirectory(examples)
-add_subdirectory(proto)

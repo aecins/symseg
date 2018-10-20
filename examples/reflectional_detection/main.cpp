@@ -44,7 +44,7 @@
 
 // Proto
 #include "google/protobuf/text_format.h"
-#include "../build/proto/reflectional_symmetry_detection_example_options.pb.h"
+#include "reflectional_symmetry_detection_example_options.pb.h"
 
 // Project includes
 #include "vis.hpp"

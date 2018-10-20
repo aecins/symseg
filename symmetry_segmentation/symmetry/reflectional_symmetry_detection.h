@@ -35,7 +35,7 @@
 
 #include <symmetry/reflectional_symmetry.hpp>
 #include <occupancy_map.hpp>
-#include "../build/proto/reflectional_symmetry_detection_options.pb.h"
+#include "reflectional_symmetry_detection_options.pb.h"
 
 namespace sym
 {
